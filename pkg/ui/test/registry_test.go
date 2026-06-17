@@ -44,7 +44,7 @@ func TestConcurrentRenderAndRegister(t *testing.T) {
 	}
 
 	noopOnce.Do(func() {
-		err := ui.RegisterComponent("concurrent_test_noop", func(cfg ui.ComponentConfig) (ui.SafeOutput, error) {
+		err := ui.RegisterComponent("concurrent_test_noop", spoofConfig{}, func(cfg ui.ComponentConfig) (ui.SafeOutput, error) {
 			return ui.UnsafeRawOutput("<span>noop</span>"), nil
 		})
 		assert.NoError(t, err)
@@ -56,7 +56,7 @@ func TestConcurrentRenderAndRegister(t *testing.T) {
 }
 
 func TestRegisterComponentEmptyNameRejected(t *testing.T) {
-	err := ui.RegisterComponent("", func(cfg ui.ComponentConfig) (ui.SafeOutput, error) {
+	err := ui.RegisterComponent("", spoofConfig{}, func(cfg ui.ComponentConfig) (ui.SafeOutput, error) {
 		return ui.SafeOutput{}, nil
 	})
 	assert.Error(t, err)
@@ -64,7 +64,16 @@ func TestRegisterComponentEmptyNameRejected(t *testing.T) {
 }
 
 func TestRegisterComponentNilFnRejected(t *testing.T) {
-	err := ui.RegisterComponent("murphy_nil_fn", nil)
+	err := ui.RegisterComponent("murphy_nil_fn", spoofConfig{}, nil)
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "nil")
 }
+
+func TestRenderComponentJSON(t *testing.T) {
+	dataJSON := `{"Message": "hello json", "IsUser": true}`
+	got, err := ui.RenderComponentJSON("chat_bubble", []byte(dataJSON))
+	assert.NoError(t, err)
+	assert.Contains(t, got.String(), "hello json")
+	assert.Contains(t, got.String(), "ai-user")
+}
+

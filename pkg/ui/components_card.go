@@ -27,7 +27,7 @@ func init() {
     if err != nil {
         panic(err)
     }
-    internal.RegisterBuiltin("card", func(cfg interface{}) (string, error) {
+    internal.RegisterBuiltin("card", CardConfig{}, func(cfg interface{}) (string, error) {
         c, ok := cfg.(CardConfig)
         if !ok {
             return "", fmt.Errorf("ui: card expects %T, got %T", CardConfig{}, cfg)

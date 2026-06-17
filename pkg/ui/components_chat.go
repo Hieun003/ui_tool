@@ -26,7 +26,7 @@ func init() {
         panic(err)
     }
     // Register the renderer.
-    internal.RegisterBuiltin("chat_bubble", func(cfg interface{}) (string, error) {
+    internal.RegisterBuiltin("chat_bubble", ChatBubbleConfig{}, func(cfg interface{}) (string, error) {
         // Type‑assert safely.
         c, ok := cfg.(ChatBubbleConfig)
         if !ok {

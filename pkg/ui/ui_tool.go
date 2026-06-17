@@ -1,7 +1,9 @@
 package ui
 
 import (
+	"encoding/json"
 	"fmt"
+	"reflect"
 	"strings"
 
 	"github.com/Hieun003/ui_tool/internal"
@@ -66,11 +68,38 @@ func RenderComponent(name string, cfg ComponentConfig) (SafeOutput, error) {
 	return SafeOutput{html: out}, nil
 }
 
+// RenderComponentJSON renders a component by unmarshaling dynamic JSON config.
+func RenderComponentJSON(name string, dataJSON []byte) (SafeOutput, error) {
+	proto, err := internal.GetPrototype(name)
+	if err != nil {
+		return SafeOutput{}, err
+	}
+
+	// Create a new pointer to a value of the prototype's type.
+	valPtr := reflect.New(reflect.TypeOf(proto))
+
+	// Unmarshal the JSON into the pointed-to object.
+	if err := json.Unmarshal(dataJSON, valPtr.Interface()); err != nil {
+		return SafeOutput{}, fmt.Errorf("ui: failed to unmarshal json for component %s: %w", name, err)
+	}
+
+	// Dereference the pointer to get the concrete ComponentConfig.
+	cfg, ok := valPtr.Elem().Interface().(ComponentConfig)
+	if !ok {
+		return SafeOutput{}, fmt.Errorf("ui: component %s configuration does not implement ComponentConfig", name)
+	}
+
+	return RenderComponent(name, cfg)
+}
+
 // RegisterComponent registers a custom renderer under the given name.
 // name may not clash with a built‑in component.
-func RegisterComponent(name string, fn func(cfg ComponentConfig) (SafeOutput, error)) error {
+func RegisterComponent(name string, prototype ComponentConfig, fn func(cfg ComponentConfig) (SafeOutput, error)) error {
 	if fn == nil {
 		return fmt.Errorf("ui: renderer for %s is nil", name)
+	}
+	if prototype == nil {
+		return fmt.Errorf("ui: prototype for %s is nil", name)
 	}
 	// Wrap the user function to the internal renderer signature.
 	wrapped := func(cfg interface{}) (string, error) {
@@ -83,6 +112,7 @@ func RegisterComponent(name string, fn func(cfg ComponentConfig) (SafeOutput, er
 		}
 		return "", fmt.Errorf("ui: %s expects ComponentConfig, got %T", name, cfg)
 	}
-	return internal.RegisterCustom(name, wrapped)
+	return internal.RegisterCustom(name, prototype, wrapped)
 }
+
 
