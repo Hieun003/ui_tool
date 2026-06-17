@@ -19,19 +19,8 @@ type CardConfig struct {
 
 func (CardConfig) ComponentName() string { return "card" }
 
-const cardTemplate = `
-<div class="ai-card" role="region" aria-label="Card">
-  {{if .ImageURL}}<img class="ai-card-image" src="{{.ImageURL}}" alt="card image"/>{{end}}
-  <div class="ai-card-content">
-    <h2 class="ai-card-title">{{.Title}}</h2>
-    {{if .Subtitle}}<h3 class="ai-card-subtitle">{{.Subtitle}}</h3>{{end}}
-    {{if .Actions}}
-    <div class="ai-card-actions">
-      {{range .Actions}}<a class="ai-card-action" href="{{.URL}}">{{.Label}}</a>{{end}}
-    </div>
-    {{end}}
-  </div>
-</div>`
+const cardTemplate = `<div class="ai-card" role="region" aria-label="Card">{{if .ImageURL}}<img class="ai-card-image" src="{{.ImageURL}}" alt="card image"/>{{end}}<div class="ai-card-content"><h2 class="ai-card-title">{{.Title}}</h2>{{if .Subtitle}}<h3 class="ai-card-subtitle">{{.Subtitle}}</h3>{{end}}{{if .Actions}}<div class="ai-card-actions">{{range .Actions}}<a class="ai-card-action" href="{{.URL}}">{{.Label}}</a>{{end}}</div>{{end}}</div></div>`
+
 
 func init() {
     tmpl, err := internal.MustParse("card", cardTemplate)
