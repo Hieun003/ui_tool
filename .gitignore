@@ -1,0 +1,5 @@
+scratch/
+*.exe
+*.test
+*.out
+/vendor/

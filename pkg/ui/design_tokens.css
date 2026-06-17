@@ -1,0 +1,15 @@
+:root {
+  --ai-primary: hsl(210, 45%, 20%);
+  --ai-primary-bg: hsl(210, 45%, 95%);
+  --ai-accent: hsl(340, 70%, 50%);
+  --ai-radius: 0.5rem;
+  --ai-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  --ai-font: 'Inter', system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ai-primary-bg: hsl(210, 20%, 10%);
+    --ai-primary: hsl(210, 40%, 80%);
+    --ai-accent: hsl(340, 80%, 70%);
+  }
+}
