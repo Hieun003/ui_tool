@@ -16,11 +16,8 @@ type ChatBubbleConfig struct {
 func (ChatBubbleConfig) ComponentName() string { return "chat_bubble" }
 
 // chatBubbleTemplate is parsed at init and cached.
-const chatBubbleTemplate = `
-<div class="ai-chat-bubble {{if .IsUser}}ai-user{{else}}ai-agent{{end}}" role="dialog" aria-label="{{if .IsUser}}User{{else}}Agent{{end}} Message">
-  {{if .Avatar}}<img class="ai-avatar" src="{{.Avatar}}" alt="avatar"/>{{end}}
-  <div class="ai-message">{{.Message}}</div>
-</div>`
+const chatBubbleTemplate = `<div class="ai-chat-bubble {{if .IsUser}}ai-user{{else}}ai-agent{{end}}" role="dialog" aria-label="{{if .IsUser}}User{{else}}Agent{{end}} Message">{{if .Avatar}}<img class="ai-avatar" src="{{.Avatar}}" alt="avatar"/>{{end}}<div class="ai-message">{{.Message}}</div></div>`
+
 
 func init() {
     // Parse and cache the template.
