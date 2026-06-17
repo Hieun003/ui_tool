@@ -25,9 +25,3 @@ func MustParse(name, src string) (*template.Template, error) {
     return tmpl, nil
 }
 
-// getTemplate retrieves a cached template by name. Returns nil if not found.
-func getTemplate(name string) *template.Template {
-    tmplCacheMu.RLock()
-    defer tmplCacheMu.RUnlock()
-    return tmplCache[name]
-}
